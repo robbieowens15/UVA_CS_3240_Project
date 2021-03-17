@@ -15,6 +15,7 @@ psycopg2
 pycparser
 PyJWT
 python3-openid
+python-dotenv
 pytz
 requests
 requests-oauthlib
