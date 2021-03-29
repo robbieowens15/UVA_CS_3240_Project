@@ -10,9 +10,16 @@ import logging
 # Create your views here.
 
 def display_workouts(request):
-    p = Profile.objects.get(user=request.user)
-    workouts = p.workouts.all()
-    return render(request, 'exercise_gamification/workouts.html', {'workouts': workouts})
+    if (request.user.is_authenticated):
+        if (Profile.objects.filter(user=request.user).count() == 0):
+            p = Profile(user=request.user, username=request.user.username, email="", level=0, xp=0)
+            p.save()
+        else:
+            p = Profile.objects.get(user=request.user)
+        workouts = p.workouts.all()
+        return render(request, 'exercise_gamification/workouts.html', {'workouts': workouts})
+    HttpResponseRedirect('/home/')
+
 
 def choose_workout_type(request):
     return render(request, 'exercise_gamification/choose_workout.html')

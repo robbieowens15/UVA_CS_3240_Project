@@ -17,11 +17,11 @@
       {% csrf_token %}
       <div class="form-group">
         <label class="form-label">Select Workout Type</label><br>
-        <input type="radio" name="workout_type" value="cardio">
+        <input type="radio" id="cardio" name="workout_type" value="cardio">
         <label for="cardio">Cardio</label><br>
-        <input type="radio" name="workout_type" value="strength">
+        <input type="radio" id="strength" name="workout_type" value="strength">
         <label for="strength">Strength</label><br>
-        <input type="radio" name="workout_type" value="other">
+        <input type="radio" id="other_workout" name="workout_type" value="other">
         <label for="other_workout">Other</label><br>
       </div>
       <input type="submit" value="Next">
