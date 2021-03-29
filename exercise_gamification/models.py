@@ -32,7 +32,7 @@ Fields:
     base_profile - Any workout can only have 1 profile that it is related to
     date - The date that the workout occurred (Should not allow for future dates)
     name - Name of the workout (i.e. "Pushups")
-    estimated_calories - Number of calories burnt during the exercise. 
+    estimated_calories - Number of calories burnt during the exercise.
         This number will be provided by API when possible
     notes (OPTIONAL) - place for notes about a given workout
 """
@@ -75,7 +75,9 @@ class Strength_Workout(models.Model):
 Other_Workout is a child implimentation of Workout for activities like Sports, Yoga, etc.
 
 Fields:
+    workout - Other_Workout can belong to only 1 parent Workout model
     description (OPTIONAL) - Text that describes what this activity is
 """
 class Other_Workout(models.Model):
+    workout = models.OneToOneField(Workout, on_delete=models.CASCADE)
     description = models.CharField(max_length=100, blank=True)

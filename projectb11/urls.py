@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('accounts/profile/', RedirectView.as_view(url='/')),
+    path('exercise_gamification/', include('exercise_gamification.urls')),
 ]
