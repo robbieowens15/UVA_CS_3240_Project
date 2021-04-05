@@ -1,4 +1,6 @@
 from django.test import TestCase
 
-# Create your tests here.
-assert 0 == 0
+class DummyTestCase(TestCase):
+    def dummy_test(self):
+        self.assertEqual(0, 0)
+
