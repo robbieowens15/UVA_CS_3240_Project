@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils import timezone
 
@@ -11,8 +11,16 @@ import logging
 
 def show_profile(request):
     if (request.user.is_authenticated):
-        return render(request, 'exercise_gamification/profile.html')
+        return render(request, 'exercise_gamification/profile.html', {'profile': request.user.profile})
     return HttpResponseRedirect('/accounts/login')
+
+def show_other_user_profile(request, username):
+    if (request.user.is_authenticated):
+        if (username == request.user.profile.username):
+            return HttpResponseRedirect(reverse('exercise_gamification:profile'))
+    profile = get_object_or_404(Profile, username=username)
+    return render(request, 'exercise_gamification/profile.html', {'profile': profile})
+
 
 def profile_editor(request):
     if (request.user.is_authenticated):
@@ -25,6 +33,9 @@ def save_profile(request):
         profile_user = request.POST['username']
         user_email = request.POST['email']
         user_bio = request.POST['bio']
+
+        request.user.username = profile_user
+        request.user.save()
         if (Profile.objects.filter(user=request.user).count() == 0):
             p = Profile(user=request.user, name=user_full_name, username=request.profile_user, email=user_email, bio=user_bio, level=0, xp=0)
             p.save()
