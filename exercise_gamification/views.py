@@ -9,6 +9,35 @@ import logging
 
 # Create your views here.
 
+def show_profile(request):
+    if (request.user.is_authenticated):
+        return render(request, 'exercise_gamification/profile.html')
+    return HttpResponseRedirect('/accounts/login')
+
+def profile_editor(request):
+    if (request.user.is_authenticated):
+        return render(request, 'exercise_gamification/edit_profile.html')
+    return HttpResponseRedirect('/accounts/login')
+
+def save_profile(request):
+    if (request.user.is_authenticated):
+        user_full_name = request.POST['name']
+        profile_user = request.POST['username']
+        user_email = request.POST['email']
+        user_bio = request.POST['bio']
+        if (Profile.objects.filter(user=request.user).count() == 0):
+            p = Profile(user=request.user, name=user_full_name, username=request.profile_user, email=user_email, bio=user_bio, level=0, xp=0)
+            p.save()
+        else:
+            p = Profile.objects.get(user=request.user)
+            p.name = user_full_name
+            p.username = profile_user
+            p.email = user_email
+            p.bio = user_bio
+            p.save()
+        return HttpResponseRedirect(reverse('exercise_gamification:profile'))
+    return HttpResponseRedirect('/accounts/login')
+
 def display_workouts(request):
     if (request.user.is_authenticated):
         if (Profile.objects.filter(user=request.user).count() == 0):
