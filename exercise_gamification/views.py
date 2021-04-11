@@ -11,6 +11,8 @@ import logging
 
 def show_profile(request):
     if (request.user.is_authenticated):
+        if (Profile.objects.filter(user=request.user).count() == 0):
+            Profile.objects.create(user=request.user, name='', username=request.user.username, email="", bio='', level=0, xp=0)
         return render(request, 'exercise_gamification/profile.html', {'profile': request.user.profile})
     return HttpResponseRedirect('/accounts/login')
 
@@ -37,23 +39,17 @@ def save_profile(request):
         request.user.username = profile_user
         request.user.save()
         if (Profile.objects.filter(user=request.user).count() == 0):
-            p = Profile(user=request.user, name=user_full_name, username=request.profile_user, email=user_email, bio=user_bio, level=0, xp=0)
-            p.save()
+            Profile.objects.create(user=request.user, name=user_full_name, username=profile_user, email=user_email, bio=user_bio, level=0, xp=0)
         else:
             p = Profile.objects.get(user=request.user)
-            p.name = user_full_name
-            p.username = profile_user
-            p.email = user_email
-            p.bio = user_bio
-            p.save()
+            Profile.objects.filter(user=request.user).update(name=user_full_name, username=profile_user, email=user_email, bio=user_bio)
         return HttpResponseRedirect(reverse('exercise_gamification:profile'))
     return HttpResponseRedirect('/accounts/login')
 
 def display_workouts(request):
     if (request.user.is_authenticated):
         if (Profile.objects.filter(user=request.user).count() == 0):
-            p = Profile(user=request.user, username=request.user.username, email="", level=0, xp=0)
-            p.save()
+            p = Profile.objects.create(user=request.user, name='', username=request.user.username, email="", bio='', level=0, xp=0)
         else:
             p = Profile.objects.get(user=request.user)
         workouts = p.workouts.all()
