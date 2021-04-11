@@ -26,7 +26,7 @@ def show_other_user_profile(request, username):
 
 def profile_editor(request):
     if (request.user.is_authenticated):
-        return render(request, 'exercise_gamification/edit_profile.html')
+        return render(request, 'exercise_gamification/edit_profile.html', {'user_exists': False})
     return HttpResponseRedirect('/accounts/login')
 
 def save_profile(request):

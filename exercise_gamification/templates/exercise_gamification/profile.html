@@ -17,7 +17,9 @@
           {% if user.is_authenticated %}
             <h1>{{ profile.name }}</h1>
             <h4>{{ profile.username }}</h4>
-            <a href="{% url 'exercise_gamification:edit_profile' %}">Edit Profile</a><br><br>
+            {% if profile.username == user.username %}
+              <a href="{% url 'exercise_gamification:edit_profile' %}">Edit Profile</a><br><br>
+            {% endif %}
             <p>Level: {{ profile.level }}</p>
             <p>{{ profile.xp }} XP</p></br>
             <p>Bio:</p>

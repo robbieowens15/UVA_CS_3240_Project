@@ -32,6 +32,11 @@
       </div>
       <input type="submit" value="Save">
     </form>
+    {% if user_exists %}
+      <div class="alert alert-danger" role="alert">
+        Username already exists!
+      </div>
+    {% endif %}
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
