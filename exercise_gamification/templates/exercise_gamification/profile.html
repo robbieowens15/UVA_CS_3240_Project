@@ -19,6 +19,12 @@
             <h4>{{ profile.username }}</h4>
             {% if profile.username == user.username %}
               <a href="{% url 'exercise_gamification:edit_profile' %}">Edit Profile</a><br><br>
+            {% else %}
+              {% if friends == 'yes' %}
+                <a href="{% url 'exercise_gamification:remove_friend' profile.username %}">-Remove Friend</a><br><br>
+              {% else %}
+                <a href="{% url 'exercise_gamification:add_friend' profile.username %}">+Add Friend</a><br><br>
+              {% endif %}
             {% endif %}
             <p>Level: {{ profile.level }}</p>
             <p>{{ profile.xp }} XP</p></br>

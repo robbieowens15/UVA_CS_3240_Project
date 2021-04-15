@@ -21,7 +21,11 @@ def show_other_user_profile(request, username):
         if (username == request.user.profile.username):
             return HttpResponseRedirect(reverse('exercise_gamification:profile'))
     profile = get_object_or_404(Profile, username=username)
-    return render(request, 'exercise_gamification/profile.html', {'profile': profile})
+    if (request.user.profile.friends.filter(username=username).count() > 0):
+        friends = 'yes'
+    else:
+        friends = 'no'
+    return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'friends': friends})
 
 
 def profile_editor(request):
@@ -44,6 +48,20 @@ def save_profile(request):
             p = Profile.objects.get(user=request.user)
             Profile.objects.filter(user=request.user).update(name=user_full_name, username=profile_user, email=user_email, bio=user_bio)
         return HttpResponseRedirect(reverse('exercise_gamification:profile'))
+    return HttpResponseRedirect('/accounts/login')
+
+def add_friend(request, username):
+    if (request.user.is_authenticated):
+        profile = get_object_or_404(Profile, username=username)
+        request.user.profile.friends.add(profile)
+        return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
+    return HttpResponseRedirect('/accounts/login')
+
+def remove_friend(request, username):
+    if (request.user.is_authenticated):
+        profile = get_object_or_404(Profile, username=username)
+        request.user.profile.friends.remove(profile)
+        return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
     return HttpResponseRedirect('/accounts/login')
 
 def display_workouts(request):

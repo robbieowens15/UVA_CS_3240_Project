@@ -17,4 +17,6 @@ urlpatterns = [
     path('profile/edit_profile/', views.profile_editor, name='edit_profile'),
     path('profile/save_profile/', views.save_profile, name='save_profile'),
     path('profile/<str:username>/', views.show_other_user_profile, name='user_profile'),
+    path('profile/<str:username>/add_friend', views.add_friend, name='add_friend'),
+    path('profile/<str:username>/remove_friend', views.remove_friend, name='remove_friend'),
 ]
