@@ -27,6 +27,11 @@ def show_other_user_profile(request, username):
         friends = 'no'
     return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'friends': friends})
 
+def show_friends(request):
+    if (request.user.is_authenticated):
+        friends = request.user.profile.friends.all()
+        return render(request, 'exercise_gamification/friends.html', {'friends': friends})
+    return HttpResponseRedirect('/accounts/login')
 
 def profile_editor(request):
     if (request.user.is_authenticated):

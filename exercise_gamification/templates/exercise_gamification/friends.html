@@ -8,29 +8,17 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <title>Profile</title>
+    <title>Friends</title>
   </head>
   <body>
     <div class="container text-dark mt-5">
       <div class="row justify-content-md-center">
         <div class="col-md-5 p-3">
+          <h1>Friends</h1>
           {% if user.is_authenticated %}
-            <h1>{{ profile.name }}</h1>
-            <h4>{{ profile.username }}</h4>
-            {% if profile.username == user.username %}
-              <a href="{% url 'exercise_gamification:edit_profile' %}">Edit Profile</a><br>
-              <a href="{% url 'exercise_gamification:friends' %}">Friends</a><br><br>
-            {% else %}
-              {% if friends == 'yes' %}
-                <a href="{% url 'exercise_gamification:remove_friend' profile.username %}">-Remove Friend</a><br><br>
-              {% else %}
-                <a href="{% url 'exercise_gamification:add_friend' profile.username %}">+Add Friend</a><br><br>
-              {% endif %}
-            {% endif %}
-            <p>Level: {{ profile.level }}</p>
-            <p>{{ profile.xp }} XP</p></br>
-            <p>Bio:</p>
-            <p>{{ profile.bio }}</p>
+            {% for friend in friends %}
+              <a href="{% url 'exercise_gamification:user_profile' friend.username %}">{{ friend.name }} ({{ friend.username }})</a><br>
+            {% endfor %}
           {% else %}
             <h4>Please Log in</h4>
           {% endif %}
