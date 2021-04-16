@@ -1,0 +1,12 @@
+{% extends './base.html' %}
+
+{% block title %} Select Muscle Group {% endblock %}
+
+{% block content %} 
+<h1>Make Selection</h1>
+<form action="" method="POST">
+    {% csrf_token %}
+    {{ form }}
+    <button type="Submit" name="submit" value="Submit">Select</button>
+</form>
+{% endblock %}
