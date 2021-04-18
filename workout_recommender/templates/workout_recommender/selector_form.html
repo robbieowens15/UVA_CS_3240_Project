@@ -6,7 +6,7 @@
 <h1>Make Selection</h1>
 <form action="" method="POST">
     {% csrf_token %}
-    {{ form }}
+    {{ form.as_p }}
     <button type="Submit" name="submit" value="Submit">Select</button>
 </form>
 {% endblock %}

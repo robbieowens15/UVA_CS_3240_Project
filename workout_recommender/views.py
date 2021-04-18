@@ -6,11 +6,17 @@ from .forms import SelectorForm
 def selector_form(request):
     context={}
     context['form'] = SelectorForm(request.POST)
+    if context['form'].is_valid():
+        num_workouts = context['form'].cleaned_data['num_workouts']
+        selection = context['form'].cleaned_data['selection']
+
+        relevent_workouts = api_interactions.get_select_workouts(num_workouts, selection)
+        return render(request, 'workout_recommender/workouts.html', 
+        {"workouts": relevent_workouts})
+
     return render(request, 'workout_recommender/selector_form.html', context)
     """
-        if context['form'].is_valid():
-        num_workouts = form.cleaned_data.get('num_workouts')
-        selection = form.cleaned_data.get('selection')
+        
 
         return render(request, 'workout_recommender/workouts.html',
             {"workouts": 
