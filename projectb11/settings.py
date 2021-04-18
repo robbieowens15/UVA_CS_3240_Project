@@ -54,7 +54,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
 
     #Our App
-    'exercise_gamification'
+    'exercise_gamification',
+    'workout_recommender'
 ]
 
 #Required for Google Auth

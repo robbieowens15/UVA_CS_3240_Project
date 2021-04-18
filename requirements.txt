@@ -8,8 +8,10 @@ dj-database-url
 Django
 django-allauth
 django-heroku
+html2text
 gunicorn
 idna
+langdetect
 oauthlib
 psycopg2
 pycparser
