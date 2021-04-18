@@ -42,10 +42,11 @@ def get_select_workouts(limit=30, muscle_group="Any/All"):
         return workouts
 
 def get_all_workouts(limit=30):
-    raw_responce = requests.get(f'https://wger.de/api/v2/exerciseinfo/?format=json&limit={limit}')
+    raw_responce = requests.get(f'https://wger.de/api/v2/exerciseinfo/?format=json&limit=999')
     as_text = json.dumps(raw_responce.json(), indent=4)
     parseable = json.loads(as_text)["results"]
     all_workouts = []
+    counter = 0
     for workout in parseable:
         new_workout = {
             "name": html2text.html2text(workout["name"]).strip(),
@@ -54,6 +55,9 @@ def get_all_workouts(limit=30):
         try:
             if detect(new_workout["name"]) == "en" and detect(new_workout["description"]) == "en":
                 all_workouts.append(new_workout)
+                counter = counter + 1
         except Exception:
             continue
+        if counter == limit:
+            break
     return all_workouts
