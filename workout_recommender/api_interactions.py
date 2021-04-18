@@ -1,7 +1,6 @@
 import requests
 import json
 import html2text
-from langdetect import detect
 
 def get_all_muscle_groups():
     raw_responce = requests.get('https://wger.de/api/v2/exercisecategory/?format=json')
@@ -20,8 +19,7 @@ def get_select_workouts(limit=30, muscle_group="Any/All"):
     if muscle_group == "Any/All":
         return get_all_workouts(limit=limit)
     else:
-        counter = 0
-        raw_responce = requests.get(f'https://wger.de/api/v2/exerciseinfo/?format=json&limit=999')
+        raw_responce = requests.get(f'https://wger.de/api/v2/exerciseinfo/?format=json&limit={limit}&language=2')
         as_text = json.dumps(raw_responce.json(), indent=4)
         parseable = json.loads(as_text)["results"]
         workouts = []
@@ -31,18 +29,13 @@ def get_select_workouts(limit=30, muscle_group="Any/All"):
                     "name": html2text.html2text(workout["name"]).strip(),
                     "description": html2text.html2text(workout["description"]).strip()
                 }
-                try:
-                    if detect(new_workout["name"]) == "en" and detect(new_workout["description"]) == "en":
-                        workouts.append(new_workout)
-                        counter = counter + 1
-                except Exception:
-                    continue
-            if counter == limit:
-                break
+
+                workouts.append(new_workout)
+
         return workouts
 
 def get_all_workouts(limit=30):
-    raw_responce = requests.get(f'https://wger.de/api/v2/exerciseinfo/?format=json&limit=999')
+    raw_responce = requests.get(f'https://wger.de/api/v2/exerciseinfo/?format=json&limit={limit}&language=2')
     as_text = json.dumps(raw_responce.json(), indent=4)
     parseable = json.loads(as_text)["results"]
     all_workouts = []
@@ -52,12 +45,6 @@ def get_all_workouts(limit=30):
             "name": html2text.html2text(workout["name"]).strip(),
             "description": html2text.html2text(workout["description"]).strip()
         }
-        try:
-            if detect(new_workout["name"]) == "en" and detect(new_workout["description"]) == "en":
-                all_workouts.append(new_workout)
-                counter = counter + 1
-        except Exception:
-            continue
-        if counter == limit:
-            break
+        all_workouts.append(new_workout)
+
     return all_workouts
