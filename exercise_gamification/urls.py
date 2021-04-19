@@ -13,4 +13,11 @@ urlpatterns = [
     path('workouts/submit_strength/', views.submit_strength_workout, name='submit_strength'),
     path('workouts/other_workout/', views.load_other_submission, name='other_workout'),
     path('workouts/submit_other/', views.submit_other_workout, name='submit_other'),
+    path('profile/', views.show_profile, name='profile'),
+    path('profile/friends', views.show_friends, name='friends'),
+    path('profile/edit_profile/', views.profile_editor, name='edit_profile'),
+    path('profile/save_profile/', views.save_profile, name='save_profile'),
+    path('profile/<str:username>/', views.show_other_user_profile, name='user_profile'),
+    path('profile/<str:username>/add_friend', views.add_friend, name='add_friend'),
+    path('profile/<str:username>/remove_friend', views.remove_friend, name='remove_friend'),
 ]

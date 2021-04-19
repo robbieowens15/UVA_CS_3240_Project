@@ -10,6 +10,7 @@ Fields:
     user - This is the account that a profile is connected to (user is created when using google sig-in)
     username - Unique identifier of profile (will be useful to find friends)
     email - the email address for a profile
+    bio - (OPTIONAL) the personal bio of the user
     level - current level of the profile
     xp - current xp of the profile
     friends (OPTIONAL) - the set of all profiles that this profile is friends with
@@ -17,8 +18,10 @@ Fields:
 """
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=30)
     username = models.CharField(max_length=15, primary_key=True)
     email = models.EmailField()
+    bio = models.TextField()
     level = models.IntegerField()
     xp = models.IntegerField()
     friends = models.ManyToManyField('self', blank=True)

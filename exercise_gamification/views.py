@@ -1,5 +1,5 @@
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils import timezone
 
@@ -9,11 +9,70 @@ import logging
 
 # Create your views here.
 
+def show_profile(request):
+    if (request.user.is_authenticated):
+        if (Profile.objects.filter(user=request.user).count() == 0):
+            Profile.objects.create(user=request.user, name='', username=request.user.username, email="", bio='', level=0, xp=0)
+        return render(request, 'exercise_gamification/profile.html', {'profile': request.user.profile})
+    return HttpResponseRedirect('/accounts/login')
+
+def show_other_user_profile(request, username):
+    if (request.user.is_authenticated):
+        if (username == request.user.profile.username):
+            return HttpResponseRedirect(reverse('exercise_gamification:profile'))
+    profile = get_object_or_404(Profile, username=username)
+    if (request.user.profile.friends.filter(username=username).count() > 0):
+        friends = 'yes'
+    else:
+        friends = 'no'
+    return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'friends': friends})
+
+def show_friends(request):
+    if (request.user.is_authenticated):
+        friends = request.user.profile.friends.all()
+        return render(request, 'exercise_gamification/friends.html', {'friends': friends})
+    return HttpResponseRedirect('/accounts/login')
+
+def profile_editor(request):
+    if (request.user.is_authenticated):
+        return render(request, 'exercise_gamification/edit_profile.html', {'user_exists': False})
+    return HttpResponseRedirect('/accounts/login')
+
+def save_profile(request):
+    if (request.user.is_authenticated):
+        user_full_name = request.POST['name']
+        profile_user = request.POST['username']
+        user_email = request.POST['email']
+        user_bio = request.POST['bio']
+
+        request.user.username = profile_user
+        request.user.save()
+        if (Profile.objects.filter(user=request.user).count() == 0):
+            Profile.objects.create(user=request.user, name=user_full_name, username=profile_user, email=user_email, bio=user_bio, level=0, xp=0)
+        else:
+            p = Profile.objects.get(user=request.user)
+            Profile.objects.filter(user=request.user).update(name=user_full_name, username=profile_user, email=user_email, bio=user_bio)
+        return HttpResponseRedirect(reverse('exercise_gamification:profile'))
+    return HttpResponseRedirect('/accounts/login')
+
+def add_friend(request, username):
+    if (request.user.is_authenticated):
+        profile = get_object_or_404(Profile, username=username)
+        request.user.profile.friends.add(profile)
+        return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
+    return HttpResponseRedirect('/accounts/login')
+
+def remove_friend(request, username):
+    if (request.user.is_authenticated):
+        profile = get_object_or_404(Profile, username=username)
+        request.user.profile.friends.remove(profile)
+        return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
+    return HttpResponseRedirect('/accounts/login')
+
 def display_workouts(request):
     if (request.user.is_authenticated):
         if (Profile.objects.filter(user=request.user).count() == 0):
-            p = Profile(user=request.user, username=request.user.username, email="", level=0, xp=0)
-            p.save()
+            p = Profile.objects.create(user=request.user, name='', username=request.user.username, email="", bio='', level=0, xp=0)
         else:
             p = Profile.objects.get(user=request.user)
         workouts = p.workouts.all()
