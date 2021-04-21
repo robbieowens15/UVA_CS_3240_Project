@@ -1,50 +1,42 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+{% extends "exercise_gamification/base.html" %}
+{% block content %}
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 
-    <title>Workouts</title>
-  </head>
-  <body>
+<div class="container-fluid d-flex flex-column">
+  <div class="mb-5">
     <h1>Your Workouts</h1>
     <a href="{% url 'exercise_gamification:choose_workout' %}">New Workout</a>
-    <div class="container text-dark mt-5">
-      <div class="row justify-content-md-center">
-        <div class="col-md-5 p-3">
-          {% for workout in workouts %}
-            <div class="form-group">
-              <h4>{{ workout.name }}</h4>
-              <p>Date: {{ workout.date }}</p>
-              <p>Estimated Calories: {{ workout.estimated_calories }}</p>
-              {% if workout.cardio_workout %}
-                <p>Duration: {{ workout.cardio_workout.duration }} minutes</p>
-                <p>Distance: {{ workout.cardio_workout.distance }} meters</p>
-              {% elif workout.strength_workout %}
-                <p>Repititions: {{ workout.strength_workout.repetitions }}</p>
-                {% if not workout.strength_workout.bodyweight %}
-                  <p>Weight: {{ workout.strength_workout.weight }} lbs</p>
-                {% else %}
-                  <p>Weight: 0 lbs (Bodyweight)</p>
-                {% endif %}
-              {% elif workout.other_workout %}
-                <p>Description: {{ workout.other_workout.description }}</p>
-              {% endif %}
-              <p>Additional Notes: {{ workout.notes }}</p>
-            </div>
-          {% endfor %}
+  </div>
+
+  <div class="div container p-0">
+    <div class="row">
+      {% for workout in workouts reversed %}
+      <div class="div col-4 mb-5">
+        <div class="form-group">
+          <h4>{{ workout.name }}</h4>
+          <p>Date: {{ workout.date }}</p>
+          <p>Estimated Calories: {{ workout.estimated_calories }}</p>
+          {% if workout.cardio_workout %}
+          <p>Duration: {{ workout.cardio_workout.duration }} minutes</p>
+          <p>Distance: {{ workout.cardio_workout.distance }} meters</p>
+          {% elif workout.strength_workout %}
+          <p>Repititions: {{ workout.strength_workout.repetitions }}</p>
+          {% if not workout.strength_workout.bodyweight %}
+          <p>Weight: {{ workout.strength_workout.weight }} lbs</p>
+          {% else %}
+          <p>Weight: 0 lbs (Bodyweight)</p>
+          {% endif %}
+          {% elif workout.other_workout %}
+          <p>Description: {{ workout.other_workout.description }}</p>
+          {% endif %}
+          <p>Additional Notes: {{ workout.notes }}</p>
         </div>
       </div>
+      {% endfor %}
     </div>
+  </div>
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  </body>
-</html>
+</div>
+
+
+{% endblock content%}
