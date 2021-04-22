@@ -3,5 +3,7 @@ from django.test import TestCase
 
 class DummyTestCase(TestCase):
     
-    def dummy_test(self):
-        self.assertTrue(1 == 1)
+    def test_dummy(self):
+        s = 'hello world'
+        self.assertEqual(s, 'hello world')
+
