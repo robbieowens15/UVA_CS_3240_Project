@@ -6,6 +6,6 @@ python:
   - "3.9"
 before_script:
   - pip3 install -r requirements.txt
-env: DJANGO_SETTINGS_MODULE="projectb11.settings"
+env: DJANGO_SETTINGS_MODULE=projectb11.settings
 script:
   - python manage.py test exercise_gamification
