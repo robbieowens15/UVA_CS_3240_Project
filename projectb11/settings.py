@@ -22,18 +22,28 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 #But use postgres sql on the production server
 dotenv_file = os.path.join(BASE_DIR, ".env")
 if os.path.isfile(dotenv_file):
-    dotenv.load_dotenv(dotenv_file)
+    dotenv.load_dotenv(dotenv_file, encoding="utf-16")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-goi-)4!4j5$+p6ndeu9+++dk-hgw(%rpay430+#^a^4gw1l&&8'
+SECRET_KEY = ')yi7@zuk-6)%x4s9504j0xn+#6yeqxbg2*1aofv!+hfaj3707v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['project-b-11-cs3240.herokuapp.com/', 'https://project-b-11-cs3240.herokuapp.com/']
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 3600
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_SSL_HOST = 'https://project-b-11-cs3240.herokuapp.com/'
+SECURE_SSL_REDIRECT = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'SAMEORIGIN'
 
 
 # Application definition
@@ -93,9 +103,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'projectb11.wsgi.application'
 
 
-
 DATABASES = {}
-DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
 
 #Required for Google Auth
 AUTHENTICATION_BACKENDS = [
