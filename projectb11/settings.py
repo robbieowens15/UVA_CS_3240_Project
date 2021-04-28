@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #But use postgres sql on the production server
 dotenv_file = os.path.join(BASE_DIR, ".env")
 if os.path.isfile(dotenv_file):
-    dotenv.load_dotenv(dotenv_file, encoding="utf-16")
+    dotenv.load_dotenv(dotenv_file)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
@@ -102,8 +102,8 @@ WSGI_APPLICATION = 'projectb11.wsgi.application'
 
 
 DATABASES = {}
-DATABASES['default'] = dj_database_url.config()
-DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
+DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+#DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
 
 #Required for Google Auth
 AUTHENTICATION_BACKENDS = [
