@@ -13,7 +13,7 @@ def show_profile(request):
     if (request.user.is_authenticated):
         if (Profile.objects.filter(user=request.user).count() == 0):
             Profile.objects.create(user=request.user, name='', username=request.user.username, email="", bio='', level=0, xp=0)
-        return render(request, 'exercise_gamification/profile.html', {'profile': request.user.profile})
+        return render(request, 'exercise_gamification/profile.html', {'profile': request.user.profile, 'friends': request.user.profile.friends.all(), 'workouts': request.user.profile.workouts.all()})
     return HttpResponseRedirect('/accounts/login')
 
 def show_other_user_profile(request, username):
@@ -25,7 +25,7 @@ def show_other_user_profile(request, username):
         friends = 'yes'
     else:
         friends = 'no'
-    return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'friends': friends})
+    return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'is_friend': friends})
 
 def show_friends(request):
     if (request.user.is_authenticated):
@@ -66,7 +66,7 @@ def remove_friend(request, username):
     if (request.user.is_authenticated):
         profile = get_object_or_404(Profile, username=username)
         request.user.profile.friends.remove(profile)
-        return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
+        return show_profile(request)
     return HttpResponseRedirect('/accounts/login')
 
 def display_workouts(request):

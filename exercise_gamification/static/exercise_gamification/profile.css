@@ -1,0 +1,10 @@
+.flex-container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.flex-container h5 {
+  display: inline;
+  vertical-align: middle;
+  padding-left: 15px;
+}
