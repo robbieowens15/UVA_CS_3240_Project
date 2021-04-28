@@ -102,7 +102,7 @@ WSGI_APPLICATION = 'projectb11.wsgi.application'
 
 
 DATABASES = {}
-DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+DATABASES['default'] = dj_database_url.config()
 
 #Required for Google Auth
 AUTHENTICATION_BACKENDS = [
