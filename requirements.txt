@@ -12,7 +12,6 @@ html2text
 gunicorn
 idna
 oauthlib
-psycopg2
 psycopg2-binary
 pycparser
 PyJWT
