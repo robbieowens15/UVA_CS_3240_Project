@@ -19,7 +19,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #But use postgres sql on the production server
 dotenv_file = os.path.join(BASE_DIR, ".env")
 if os.path.isfile(dotenv_file):
-    dotenv.load_dotenv(dotenv_file)
+    dotenv.load_dotenv(dotenv_file, encoding="utf-16")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
