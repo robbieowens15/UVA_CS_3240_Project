@@ -2,11 +2,16 @@
 
 {% block title %} Select Muscle Group {% endblock %}
 
-{% block content %} 
-<h1>Make Selection</h1>
+{% block content %}
+<style>em{
+    color:royalblue;
+    font-family:Arial, Helvetica, sans-serif;
+}</style>
+<em>Select Number and Muscle Groups of Workouts you want recommended to you!</em>
+<hr>
 <form action="" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="Submit" name="submit" value="Submit">Select</button>
+    <input class="btn btn-primary" type="submit" value="Submit">
 </form>
 {% endblock %}

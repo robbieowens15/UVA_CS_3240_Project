@@ -19,7 +19,7 @@ from django.views.generic import TemplateView, RedirectView
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name="exercise_gamification/index.html")),
-    path('admin/', admin.site.urls),
+    path(r'b11adminpath/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('accounts/profile/', RedirectView.as_view(url='/')),
     path('exercise_gamification/', include('exercise_gamification.urls')),
