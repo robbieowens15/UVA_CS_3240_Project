@@ -59,7 +59,7 @@
             <h4>Workouts</h4>
             {% if profile.username == user.username %}
               <div>
-                <button type="button" class="btn btn-success" onclick="location.href='{% url 'exercise_gamification:choose_workout' %}'">New</button>
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#newWorkoutModal">New</button>
                 <button type="button" class="btn btn-primary" onclick="location.href='{% url 'exercise_gamification:workouts' %}'">View All</button>
               </div>
             {% endif %}
@@ -125,8 +125,8 @@
               </div>
             </div>
             <div class="modal-footer">
+              <button type="submit" class="btn btn-success">Save</button>
               <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-              <button type="submit" class="btn btn-success">Save Profile</button>
             </div>
           </form>
         </div>
@@ -156,6 +156,37 @@
         </div>
       </div>
     </div>
+
+    <div class="modal fade" id="newWorkoutModal" tabindex="-1" role="dialog" aria-labelledby="newWorkoutModalTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="newWorkoutModalLongTitle">Choose Workout Type</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <form action="{% url 'exercise_gamification:redirect_workout' %}" method="post">
+            {% csrf_token %}
+            <div class="modal-body">
+              <div class="form-group">
+                <input type="radio" id="cardio" name="workout_type" value="cardio" required>
+                <label for="cardio">Cardio</label><br>
+                <input type="radio" id="strength" name="workout_type" value="strength" required>
+                <label for="strength">Strength</label><br>
+                <input type="radio" id="other_workout" name="workout_type" value="other" required>
+                <label for="other_workout">Other</label>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Submit</button>
+              <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
   </body>
 </html>
 {% endblock content %}

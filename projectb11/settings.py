@@ -28,14 +28,11 @@ if os.path.isfile(dotenv_file):
 # See https://docs.djangoproject.com/en/dev/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-goi-)4!4j5$+p6ndeu9+++dk-hgw(%rpay430+#^a^4gw1l&&8'
+SECRET_KEY = ')yi7@zuk-6)%x4s9504j0xn+#6yeqxbg2*1aofv!+hfaj3707v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
-
-"""
 ALLOWED_HOSTS = ['project-b-11-cs3240.herokuapp.com/', 'https://project-b-11-cs3240.herokuapp.com/']
 
 CSRF_COOKIE_SECURE = True
@@ -47,7 +44,7 @@ SECURE_SSL_REDIRECT = True
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'SAMEORIGIN'
-"""
+
 
 # Application definition
 
