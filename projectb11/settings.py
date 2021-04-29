@@ -100,10 +100,20 @@ TEMPLATES = [
 WSGI_APPLICATION = 'projectb11.wsgi.application'
 
 
-
 DATABASES = {}
-DATABASES['default'] = dj_database_url.config(conn_max_age=600, ssl_require=True)
-#DATABASES['default']['ENGINE'] = 'django.db.backends.postgresql_psycopg2'
+DATABASES['default'] =  dj_database_url.config(default='postgres://postgres@localhost/test_db', conn_max_age=600, ssl_require=True)
+
+if 'TRAVIS' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE':   'django.db.backends.postgresql_psycopg2',
+            'NAME':     'travisci',
+            'USER':     'postgres',
+            'PASSWORD': '',
+            'HOST':     'localhost',
+            'PORT':     '',
+        }
+    }
 
 #Required for Google Auth
 AUTHENTICATION_BACKENDS = [
