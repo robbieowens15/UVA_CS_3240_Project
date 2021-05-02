@@ -2,7 +2,7 @@
 
 {% block title %} Select Muscle Group {% endblock %}
 
-{% block more-content %} 
+{% block more-content %}
 <h1>Make Selection</h1>
 <form action="{% url 'workout_recommender:redirect_form' %}" method="POST">
     {% csrf_token %}
