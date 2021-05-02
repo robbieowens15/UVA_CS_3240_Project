@@ -28,6 +28,17 @@ class Profile(models.Model):
     workouts = models.ManyToManyField('Workout', blank=True)
 
 """
+FriendRequest class holds data about friend requests sent between two users
+
+Fields:
+    to_user - The user who is being send the friend request
+    from_user - The user who sent the friend request
+"""
+class FriendRequest(models.Model):
+    to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE)
+    from_user = models.ForeignKey(User, related_name='from_user', on_delete=models.CASCADE)
+
+"""
 Workout class is ment to be a Parent object to hold common fields, but is implimented
 with more specific subclasses
 
