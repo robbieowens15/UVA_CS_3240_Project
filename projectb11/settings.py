@@ -45,7 +45,6 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_BROWSER_XSS_FILTER = True
 X_FRAME_OPTIONS = 'SAMEORIGIN'
 
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -95,6 +94,9 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'exercise_gamification.context_processors.add_variables',
+                'workout_recommender.context_processors.add_variables',
+                'projectb11.context_processors.add_variables',
             ],
         },
     },
