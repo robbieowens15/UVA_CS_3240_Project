@@ -2,16 +2,53 @@
 
 {% block title %} Select Muscle Group {% endblock %}
 
-{% block content %}
-<style>em{
-    color:royalblue;
-    font-family:Arial, Helvetica, sans-serif;
-}</style>
-<em>Select Number and Muscle Groups of Workouts you want recommended to you!</em>
-<hr>
-<form action="" method="POST">
+{% block more-content %}
+<h1>Make Selection</h1>
+<form action="{% url 'workout_recommender:redirect_form' %}" method="POST">
     {% csrf_token %}
-    {{ form.as_p }}
-    <input class="btn btn-primary" type="Submit" name="submit" value="Submit">
+    <div class="form-group">
+        <label class="form-label">Select Muscle Group</label><br>
+        <input type="radio"
+            id="Any/All"
+            name="muscle-group"
+            value="Any/All">
+        <label for="Any/All">Any/All</label><br>
+        <input type="radio"
+            id="Abs"
+            name="muscle-group"
+            value="Abs">
+        <label for="Abs">Abs</label><br>
+        <input type="radio"
+            id="Arms"
+            name="muscle-group"
+            value="Arms">
+        <label for="Arms">Arms</label><br>
+        <input type="radio"
+            id="Back"
+            name="muscle-group"
+            value="Back">
+        <label for="Back">Back</label><br>
+        <input type="radio"
+            id="Calves"
+            name="muscle-group"
+            value="Calves">
+        <label for="Calves">Calves</label><br>
+        <input type="radio"
+            id="Chest"
+            name="muscle-group"
+            value="Chest">
+        <label for="Chest">Chest</label><br>
+        <input type="radio"
+            id="Legs"
+            name="muscle-group"
+            value="Legs">
+        <label for="Legs">Legs</label><br>
+        <input type="radio"
+            id="Shoulders"
+            name="muscle-group"
+            value="Shoulders">
+        <label for="Shoulders">Shoulders</label><br>
+      </div>
+    <button type="Submit" name="submit" value="Submit">Select</button>
 </form>
 {% endblock %}
