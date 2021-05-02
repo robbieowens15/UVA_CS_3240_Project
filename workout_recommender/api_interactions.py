@@ -34,6 +34,26 @@ def get_select_workouts(limit=30, muscle_group="Any/All"):
 
         return workouts
 
+def get_workouts(muscle_group="Any/All"):
+    if muscle_group == "Any/All":
+        return get_all_workouts(limit=999)
+    else:
+        raw_responce = requests.get(f'https://wger.de/api/v2/exerciseinfo/?format=json&limit={999}&language=2')
+        as_text = json.dumps(raw_responce.json(), indent=4)
+        parseable = json.loads(as_text)["results"]
+        workouts = []
+        for workout in parseable:
+            if workout["category"]["name"] == muscle_group:
+                new_workout = {
+                    "name": html2text.html2text(workout["name"]).strip(),
+                    "description": html2text.html2text(workout["description"]).strip()
+                }
+
+                workouts.append(new_workout)
+
+        return workouts
+
+
 def get_all_workouts(limit=30):
     raw_responce = requests.get(f'https://wger.de/api/v2/exerciseinfo/?format=json&limit={limit}&language=2')
     as_text = json.dumps(raw_responce.json(), indent=4)

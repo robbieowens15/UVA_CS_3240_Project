@@ -1,7 +1,7 @@
 {% extends './base.html' %}
 
 <ul>
-{% block content%}
+{% block more-content%}
     {% for workout in workouts %}
     <li>
         <h3>{{ workout.name }}</h3>
@@ -9,4 +9,4 @@
     </li>
     {% endfor %}
 </ul>
-{% endblock content %}
+{% endblock more-content %}

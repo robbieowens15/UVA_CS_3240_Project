@@ -10,6 +10,7 @@
     <header class="bg-light mb-5 d-flex justify-content-between p-2 align-items-baseline" >
         <h3><b>The Exercise Game</b></h3>
         <div class="d-flex align-items-center">
+            <a href="{% url 'workout_recommender:selector_form' %}" class="mr-3">Recommender</a>
             <a href="{% url 'exercise_gamification:workouts' %}" class="mr-3">Workouts</a>
             <a href= "{% url 'exercise_gamification:profile' %}">Profile</a>
         </div>
