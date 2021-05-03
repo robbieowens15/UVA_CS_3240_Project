@@ -31,7 +31,7 @@ if os.path.isfile(dotenv_file):
 SECRET_KEY = ')yi7@zuk-6)%x4s9504j0xn+#6yeqxbg2*1aofv!+hfaj3707v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['project-b-11-cs3240.herokuapp.com/', 'https://project-b-11-cs3240.herokuapp.com/']
 
