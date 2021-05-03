@@ -43,6 +43,15 @@
         </ul>
       </div>
     </nav>
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <div class="alert alert-success">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </ul>
+{% endif %}
 
     <div class="modal fade" id="friendRequestsModal" tabindex="-1" role="dialog" aria-labelledby="friendRequestsTitle" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">

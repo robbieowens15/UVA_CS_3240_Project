@@ -18,7 +18,7 @@
           <p>Estimated Calories: {{ workout.estimated_calories }}</p>
           {% if workout.cardio_workout %}
           <p>Duration: {{ workout.cardio_workout.duration }} minutes</p>
-          <p>Distance: {{ workout.cardio_workout.distance }} meters</p>
+          <p>Distance: {{ workout.cardio_workout.distance }} miles</p>
           {% elif workout.strength_workout %}
           <p>Repititions: {{ workout.strength_workout.repetitions }}</p>
           {% if not workout.strength_workout.bodyweight %}
@@ -29,7 +29,9 @@
           {% elif workout.other_workout %}
           <p>Description: {{ workout.other_workout.description }}</p>
           {% endif %}
+          {% if not workout.notes == "" %}
           <p>Additional Notes: {{ workout.notes }}</p>
+          {% endif %}
         </div>
       </div>
       {% endfor %}
