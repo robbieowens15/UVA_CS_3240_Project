@@ -39,6 +39,15 @@
         </ul>
       </div>
     </nav>
+    {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+          <div class="alert alert-success">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </ul>
+{% endif %}
     <div id="content" class="d-flex justify-content-center">
         {% block content %}{% endblock %}
     </div>
