@@ -1,9 +1,7 @@
 {% extends "exercise_gamification/base.html" %}
-{% load static %}
 
 
 {% block content %}
-<link rel="stylesheet" type="text/css" href="{% static 'exercise_gamification/profile.css' %}">
 
 <html lang="en">
   <head>
@@ -33,9 +31,18 @@
                   <div>
                     <button type="button" class="btn btn-danger" onclick="location.href='{% url 'exercise_gamification:remove_friend' profile.username %}'">Remove Friend</button><br><br>
                   </div>
+                {% elif is_friend == 'out request' %}
+                  <div>
+                    <button type="button" class="btn btn-warning" onclick="location.href='{% url 'exercise_gamification:remove_fr' profile.username %}'">Cancel Friend Request</button><br><br>
+                  </div>
+                {% elif is_friend == 'in request' %}
+                  <div>
+                    <button type="button" class="btn btn-success" onclick="location.href='{% url 'exercise_gamification:accept_fr' profile.username %}'">Accept Friend Request</button>
+                    <button type="button" class="btn btn-danger" onclick="location.href='{% url 'exercise_gamification:reject_fr' profile.username %}'">Reject Friend Request</button><br><br>
+                  </div>
                 {% else %}
                   <div>
-                    <button type="button" class="btn btn-success" onclick = "location.href='{% url 'exercise_gamification:add_friend' profile.username %}'">Add Friend</button><br><br>
+                    <button type="button" class="btn btn-success" onclick = "location.href='{% url 'exercise_gamification:send_fr' profile.username %}'">Add Friend</button><br><br>
                   </div>
                 {% endif %}
               {% endif %}

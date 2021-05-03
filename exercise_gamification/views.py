@@ -4,7 +4,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.contrib import messages
 
-from .models import Profile, Workout, Cardio_Workout, Strength_Workout, Other_Workout
+from .models import Profile, FriendRequest, Workout, Cardio_Workout, Strength_Workout, Other_Workout
 
 import logging
 
@@ -27,7 +27,12 @@ def show_other_user_profile(request, username):
     if (request.user.profile.friends.filter(username=username).count() > 0):
         friends = 'yes'
     else:
-        friends = 'no'
+        if (FriendRequest.objects.filter(to_user=profile.user, from_user=request.user).count() > 0):
+            friends = 'out request'
+        elif (FriendRequest.objects.filter(to_user=request.user, from_user=profile.user).count() > 0):
+            friends = 'in request'
+        else:
+            friends = 'no'
     return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'is_friend': friends})
 
 def show_friends(request):
@@ -58,18 +63,43 @@ def save_profile(request):
         return HttpResponseRedirect(reverse('exercise_gamification:profile'))
     return HttpResponseRedirect('/accounts/login')
 
-def add_friend(request, username):
+def accept_friend_request(request, username):
     if (request.user.is_authenticated):
         profile = get_object_or_404(Profile, username=username)
         request.user.profile.friends.add(profile)
+        fr = FriendRequest.objects.filter(to_user=request.user, from_user=profile.user).delete()
         return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
     return HttpResponseRedirect('/accounts/login')
+
+def reject_friend_request(request, username):
+    if (request.user.is_authenticated):
+        profile = get_object_or_404(Profile, username=username)
+        fr = FriendRequest.objects.filter(to_user=request.user, from_user=profile.user).delete()
+        return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
+    return HttpResponseRedirect('/accounts/login')
+
+def send_friend_request(request, username):
+    if (request.user.is_authenticated):
+        profile = get_object_or_404(Profile, username=username)
+        if (FriendRequest.objects.filter(to_user=profile.user, from_user=request.user).count() == 0):
+            fr = FriendRequest(to_user=profile.user, from_user=request.user)
+            fr.save()
+        return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
+    return HttpResponseRedirect('/accounts/login')
+
+def remove_friend_request(request, username):
+    if (request.user.is_authenticated):
+        profile = get_object_or_404(Profile, username=username)
+        fr = FriendRequest.objects.filter(to_user=profile.user, from_user=request.user).delete()
+        return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
+    return HttpResponseRedirect('/accounts/login')
+
 
 def remove_friend(request, username):
     if (request.user.is_authenticated):
         profile = get_object_or_404(Profile, username=username)
         request.user.profile.friends.remove(profile)
-        return show_profile(request)
+        return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
     return HttpResponseRedirect('/accounts/login')
 
 def display_workouts(request):
