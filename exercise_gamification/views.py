@@ -16,7 +16,7 @@ def show_profile(request):
             full_name = request.user.first_name + ' ' + request.user.last_name
             Profile.objects.create(user=request.user, name=full_name, username=request.user.username, email=request.user.email, bio='', level=0, xp=0)
         progress_width = "width: "+ str(int((request.user.profile.xp - request.user.profile.level*10000)/100)) +"%"
-        return render(request, 'exercise_gamification/profile.html', {'profile': request.user.profile, 'friends': request.user.profile.friends.all(), 'workouts': request.user.profile.workouts.all(), 'width': progress_width})
+        return render(request, 'exercise_gamification/profile.html', {'profile': request.user.profile, 'friends': request.user.profile.friends.all(), 'workouts': request.user.profile.workouts.all()[:5], 'width': progress_width})
     return HttpResponseRedirect('/accounts/login')
 
 def show_other_user_profile(request, username):
@@ -33,7 +33,8 @@ def show_other_user_profile(request, username):
             friends = 'in request'
         else:
             friends = 'no'
-    return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'is_friend': friends})
+    workouts = profile.workouts.all()[:5]
+    return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'is_friend': friends, 'workouts': workouts})
 
 def show_friends(request):
     if (request.user.is_authenticated):
@@ -110,7 +111,8 @@ def display_workouts(request):
         else:
             p = Profile.objects.get(user=request.user)
         workouts = p.workouts.all()
-        return render(request, 'exercise_gamification/workouts.html', {'workouts': workouts})
+        top_friends = request.user.profile.friends.order_by('-xp')[:3]
+        return render(request, 'exercise_gamification/workouts.html', {'workouts': workouts, 'top_friends': top_friends})
     return HttpResponseRedirect('/accounts/login')
 
 
@@ -161,7 +163,7 @@ def submit_cardio_workout(request):
         w.save()
         c = Cardio_Workout(workout=w, duration=cardio_duration, distance=cardio_distance)
         c.save()
-        
+
         p.workouts.add(w)
         old_xp = p.xp
         p.xp = int(p.xp + 1000 + float(cardio_duration)*10 + float(cardio_distance)*100)
