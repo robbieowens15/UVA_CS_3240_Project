@@ -10,13 +10,6 @@ class RecommenderTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Workout Recommender")
 
-    def test_all_workouts(self):
-        self.factory = RequestFactory()
-        request = self.factory.get('/workout_recommender/', secure=True)
-        request.user = User.objects.create()
-        response = all_workouts(request)
-        self.assertEqual(response.status_code, 200)
-
     def test_selector_form(self):
         self.factory = RequestFactory()
         request = self.factory.post('/workout_recommender/', secure=True)

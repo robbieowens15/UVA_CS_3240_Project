@@ -34,12 +34,6 @@ class WorkoutTests(TestCase):
         response = display_workouts(request)
         self.assertEqual(response.status_code, 200)
 
-    def test_choose_workout(self):
-        request = self.factory.get('/exercise_gamification/choose_workout/', secure=True)
-        request.user = User.objects.create()
-        response = choose_workout_type(request)
-        self.assertEqual(response.status_code, 200)
-
     def test_load_cardio(self):
         request = self.factory.get('/exercise_gamification/workouts/cardio_workout/', secure=True)
         request.user = User.objects.create()
@@ -166,13 +160,6 @@ class ProfileTests(TestCase):
         request.user = User.objects.create()
         response = show_profile(request)
         self.assertEqual(response.status_code, 200)
-
-    def test_edit_profile(self):
-        request = self.factory.get('/exercise_gamification/profile/edit_profile/', secure=True)
-        request.user = User.objects.create()
-        response = profile_editor(request)
-        self.assertEqual(response.status_code, 200)
-        self.assertContains(response, "Edit Profile")
 
     def test_save_profile(self):
         request = self.factory.post('/exercise_gamification/profile/save_profile/', secure=True, data={'name':'Joe', 'username':'joetheman', 'email':'joe@gmail.com', 'bio':'I am Joe'})
