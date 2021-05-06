@@ -22,7 +22,6 @@ from . import views
 urlpatterns = [
     path('', views.index, name='index'),
     path(r'b11adminpath/', admin.site.urls),
-    path('accounts/login', RedirectView('accounts/google/login/?process=login'))
     path('accounts/', include('allauth.urls')),
     path('accounts/profile/', RedirectView.as_view(url='/')),
     path('exercise_gamification/', include('exercise_gamification.urls')),
