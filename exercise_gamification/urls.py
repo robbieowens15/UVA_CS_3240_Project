@@ -4,6 +4,10 @@ from . import views
 
 app_name = 'exercise_gamification'
 urlpatterns = [
+    path('friend_requests/send/<str:username>/', views.send_friend_request, name='send_fr'),
+    path('friend_requests/remove/<str:username>/', views.remove_friend_request, name='remove_fr'),
+    path('friend_requests/accept/<str:username>/', views.accept_friend_request, name='accept_fr'),
+    path('friend_requests/reject/<str:username>/', views.reject_friend_request, name='reject_fr'),
     path('workouts/', views.display_workouts, name='workouts'),
     path('workouts/choose_workout/', views.choose_workout_type, name='choose_workout'),
     path('workouts/redirect_workout/', views.redirect_workout, name='redirect_workout'),
@@ -18,6 +22,5 @@ urlpatterns = [
     path('profile/edit_profile/', views.profile_editor, name='edit_profile'),
     path('profile/save_profile/', views.save_profile, name='save_profile'),
     path('profile/<str:username>/', views.show_other_user_profile, name='user_profile'),
-    path('profile/<str:username>/add_friend', views.add_friend, name='add_friend'),
     path('profile/<str:username>/remove_friend', views.remove_friend, name='remove_friend'),
 ]

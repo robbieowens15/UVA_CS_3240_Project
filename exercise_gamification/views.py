@@ -2,8 +2,9 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls import reverse
 from django.utils import timezone
+from django.contrib import messages
 
-from .models import Profile, Workout, Cardio_Workout, Strength_Workout, Other_Workout
+from .models import Profile, FriendRequest, Workout, Cardio_Workout, Strength_Workout, Other_Workout
 
 import logging
 
@@ -12,8 +13,10 @@ import logging
 def show_profile(request):
     if (request.user.is_authenticated):
         if (Profile.objects.filter(user=request.user).count() == 0):
-            Profile.objects.create(user=request.user, name='', username=request.user.username, email="", bio='', level=0, xp=0)
-        return render(request, 'exercise_gamification/profile.html', {'profile': request.user.profile})
+            full_name = request.user.first_name + ' ' + request.user.last_name
+            Profile.objects.create(user=request.user, name=full_name, username=request.user.username, email=request.user.email, bio='', level=0, xp=0)
+        progress_width = "width: "+ str(int((request.user.profile.xp - request.user.profile.level*10000)/100)) +"%"
+        return render(request, 'exercise_gamification/profile.html', {'profile': request.user.profile, 'friends': request.user.profile.friends.all(), 'workouts': request.user.profile.workouts.all()[:5], 'width': progress_width})
     return HttpResponseRedirect('/accounts/login')
 
 def show_other_user_profile(request, username):
@@ -24,8 +27,14 @@ def show_other_user_profile(request, username):
     if (request.user.profile.friends.filter(username=username).count() > 0):
         friends = 'yes'
     else:
-        friends = 'no'
-    return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'friends': friends})
+        if (FriendRequest.objects.filter(to_user=profile.user, from_user=request.user).count() > 0):
+            friends = 'out request'
+        elif (FriendRequest.objects.filter(to_user=request.user, from_user=profile.user).count() > 0):
+            friends = 'in request'
+        else:
+            friends = 'no'
+    workouts = profile.workouts.all()[:5]
+    return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'is_friend': friends, 'workouts': workouts})
 
 def show_friends(request):
     if (request.user.is_authenticated):
@@ -55,12 +64,37 @@ def save_profile(request):
         return HttpResponseRedirect(reverse('exercise_gamification:profile'))
     return HttpResponseRedirect('/accounts/login')
 
-def add_friend(request, username):
+def accept_friend_request(request, username):
     if (request.user.is_authenticated):
         profile = get_object_or_404(Profile, username=username)
         request.user.profile.friends.add(profile)
+        fr = FriendRequest.objects.filter(to_user=request.user, from_user=profile.user).delete()
         return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
     return HttpResponseRedirect('/accounts/login')
+
+def reject_friend_request(request, username):
+    if (request.user.is_authenticated):
+        profile = get_object_or_404(Profile, username=username)
+        fr = FriendRequest.objects.filter(to_user=request.user, from_user=profile.user).delete()
+        return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
+    return HttpResponseRedirect('/accounts/login')
+
+def send_friend_request(request, username):
+    if (request.user.is_authenticated):
+        profile = get_object_or_404(Profile, username=username)
+        if (FriendRequest.objects.filter(to_user=profile.user, from_user=request.user).count() == 0):
+            fr = FriendRequest(to_user=profile.user, from_user=request.user)
+            fr.save()
+        return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
+    return HttpResponseRedirect('/accounts/login')
+
+def remove_friend_request(request, username):
+    if (request.user.is_authenticated):
+        profile = get_object_or_404(Profile, username=username)
+        fr = FriendRequest.objects.filter(to_user=profile.user, from_user=request.user).delete()
+        return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
+    return HttpResponseRedirect('/accounts/login')
+
 
 def remove_friend(request, username):
     if (request.user.is_authenticated):
@@ -72,11 +106,13 @@ def remove_friend(request, username):
 def display_workouts(request):
     if (request.user.is_authenticated):
         if (Profile.objects.filter(user=request.user).count() == 0):
-            p = Profile.objects.create(user=request.user, name='', username=request.user.username, email="", bio='', level=0, xp=0)
+            full_name = request.user.first_name + ' ' + request.user.last_name
+            p = Profile.objects.create(user=request.user, name=full_name, username=request.user.username, email=request.user.email, bio='', level=0, xp=0)
         else:
             p = Profile.objects.get(user=request.user)
         workouts = p.workouts.all()
-        return render(request, 'exercise_gamification/workouts.html', {'workouts': workouts})
+        top_friends = request.user.profile.friends.order_by('-xp')[:3]
+        return render(request, 'exercise_gamification/workouts.html', {'workouts': workouts, 'top_friends': top_friends})
     return HttpResponseRedirect('/accounts/login')
 
 
@@ -117,7 +153,7 @@ def submit_cardio_workout(request):
         p = Profile.objects.get(user=request.user)
 
         workout_name = request.POST['workout_name']
-        calories = 300 # Dummy value for now
+        calories = 0 # Dummy value for now
         workout_notes = request.POST['notes']
 
         cardio_duration = request.POST['duration']
@@ -129,6 +165,15 @@ def submit_cardio_workout(request):
         c.save()
 
         p.workouts.add(w)
+        old_xp = p.xp
+        p.xp = int(p.xp + 1000 + float(cardio_duration)*10 + float(cardio_distance)*100)
+        old_level = p.level
+        p.level = p.xp // 10000
+        p.save()
+        messages.success(request, "Nice work, " + p.name+". " + str(p.xp-old_xp) + " xp earned!")
+
+        if p.level > old_level:
+            messages.success(request, "Amazing " + p.name +", you're now a level " + str(p.level) +"! Keep up the great work!")
 
         return HttpResponseRedirect(reverse('exercise_gamification:workouts'))
     return HttpResponseRedirect('/accounts/login')
@@ -138,7 +183,7 @@ def submit_strength_workout(request):
         p = Profile.objects.get(user=request.user)
 
         workout_name = request.POST['workout_name']
-        calories = 300 # Dummy value for now
+        calories = 0 # Dummy value for now
         workout_notes = request.POST['notes']
 
         strength_bodyweight = request.POST.getlist('bodyweight')
@@ -159,6 +204,15 @@ def submit_strength_workout(request):
 
         p.workouts.add(w)
 
+        old_xp = p.xp
+        p.xp = int(p.xp + 1000 + float(strength_repitions)*100)
+        old_level = p.level
+        p.level = p.xp // 10000
+        p.save()
+        messages.success(request, "Nice work, " + p.name+". " + str(p.xp-old_xp) + " xp earned!")
+        if p.level > old_level:
+            messages.success(request, "Amazing " + p.name +", you're now a level " + str(p.level) +"! Keep up the great work!")
+
         return HttpResponseRedirect(reverse('exercise_gamification:workouts'))
     return HttpResponseRedirect('/accounts/login')
 
@@ -167,7 +221,7 @@ def submit_other_workout(request):
         p = Profile.objects.get(user=request.user)
 
         workout_name = request.POST['workout_name']
-        calories = 300 # Dummy value for now
+        calories = 0 # Dummy value for now
         workout_notes = request.POST['notes']
 
         workout_description = request.POST['description']
@@ -179,6 +233,15 @@ def submit_other_workout(request):
         o.save()
 
         p.workouts.add(w)
+
+        p.xp = p.xp + 1000
+        old_level = p.level
+        p.level = p.xp // 10000
+        p.save()
+        messages.success(request, "Nice work, " + p.name+". " + str(1000) + " xp earned!")
+
+        if p.level > old_level:
+            messages.success(request, "Amazing " + p.name +", you're now a level " + str(p.level) +"! Keep up the great work!")
 
         return HttpResponseRedirect(reverse('exercise_gamification:workouts'))
     return HttpResponseRedirect('/accounts/login')
