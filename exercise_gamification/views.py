@@ -12,19 +12,26 @@ import logging
 
 def show_profile(request):
     if (request.user.is_authenticated):
+        # Create new profile if the profile doesn't exist
         if (Profile.objects.filter(user=request.user).count() == 0):
             full_name = request.user.first_name + ' ' + request.user.last_name
             Profile.objects.create(user=request.user, name=full_name, username=request.user.username, email=request.user.email, bio='', level=0, xp=0)
+        # Calculate the "progress" of the XP bar to the next level on the profile page
         progress_width = "width: "+ str(int((request.user.profile.xp - request.user.profile.level*10000)/100)) +"%"
         return render(request, 'exercise_gamification/profile.html', {'profile': request.user.profile, 'friends': request.user.profile.friends.all(), 'workouts': request.user.profile.workouts.all()[:5], 'width': progress_width})
     return HttpResponseRedirect('/accounts/login')
 
 def show_other_user_profile(request, username):
     profile = get_object_or_404(Profile, username=username)
-    workouts = profile.workouts.all()[:5]
+    workouts = profile.workouts.all()[:5] # Get only the first 5 most recent workouts
     if (request.user.is_authenticated):
         if (username == request.user.profile.username):
             return HttpResponseRedirect(reverse('exercise_gamification:profile'))
+        # Passes the profile's friend status to the user
+        # 'yes' - The profile and the user are friends
+        # 'out request' - The user has sent this profile a friend request
+        # 'in request' - The user is receiving a friend request from the profile
+        # 'no' - The profile and the user are not friends at all (no friends requests)
         if (request.user.profile.friends.filter(username=username).count() > 0):
             friends = 'yes'
         else:
@@ -37,62 +44,66 @@ def show_other_user_profile(request, username):
         return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'is_friend': friends, 'workouts': workouts})
     return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'workouts': workouts})
 
-def show_friends(request):
-    if (request.user.is_authenticated):
-        friends = request.user.profile.friends.all()
-        return render(request, 'exercise_gamification/friends.html', {'friends': friends})
-    return HttpResponseRedirect('/accounts/login')
-
-def profile_editor(request):
-    if (request.user.is_authenticated):
-        return render(request, 'exercise_gamification/edit_profile.html', {'user_exists': False})
-    return HttpResponseRedirect('/accounts/login')
-
 def save_profile(request):
     if (request.user.is_authenticated):
+        # Get POST profile data from form
         user_full_name = request.POST['name']
         profile_user = request.POST['username']
         user_email = request.POST['email']
         user_bio = request.POST['bio']
 
+        # Update the User object username so it matches the profile
         request.user.username = profile_user
         request.user.save()
+        # Create new profile if the profile doesn't exist
         if (Profile.objects.filter(user=request.user).count() == 0):
             Profile.objects.create(user=request.user, name=user_full_name, username=profile_user, email=user_email, bio=user_bio, level=0, xp=0)
         else:
-            p = Profile.objects.get(user=request.user)
             Profile.objects.filter(user=request.user).update(name=user_full_name, username=profile_user, email=user_email, bio=user_bio)
         return HttpResponseRedirect(reverse('exercise_gamification:profile'))
     return HttpResponseRedirect('/accounts/login')
 
+"""
+Title: How to delete a record in Django models?
+Source: https://stackoverflow.com/questions/3805958/how-to-delete-a-record-in-django-models
+"""
 def accept_friend_request(request, username):
     if (request.user.is_authenticated):
         profile = get_object_or_404(Profile, username=username)
-        request.user.profile.friends.add(profile)
-        fr = FriendRequest.objects.filter(to_user=request.user, from_user=profile.user).delete()
+        request.user.profile.friends.add(profile) # Add the user to their friends list
+        fr = FriendRequest.objects.filter(to_user=request.user, from_user=profile.user).delete() # Delete the friend request since it has been accepted and is no longer needed
         return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
     return HttpResponseRedirect('/accounts/login')
 
+"""
+Title: How to delete a record in Django models?
+Source: https://stackoverflow.com/questions/3805958/how-to-delete-a-record-in-django-models
+"""
 def reject_friend_request(request, username):
     if (request.user.is_authenticated):
         profile = get_object_or_404(Profile, username=username)
-        fr = FriendRequest.objects.filter(to_user=request.user, from_user=profile.user).delete()
+        fr = FriendRequest.objects.filter(to_user=request.user, from_user=profile.user).delete() # Delete the friend request since it has been rejected and is no longer needed
         return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
     return HttpResponseRedirect('/accounts/login')
 
 def send_friend_request(request, username):
     if (request.user.is_authenticated):
         profile = get_object_or_404(Profile, username=username)
+        # Only send a friend request if the user already hasn't sent one (safety check)
         if (FriendRequest.objects.filter(to_user=profile.user, from_user=request.user).count() == 0):
             fr = FriendRequest(to_user=profile.user, from_user=request.user)
             fr.save()
         return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
     return HttpResponseRedirect('/accounts/login')
 
+"""
+Title: How to delete a record in Django models?
+Source: https://stackoverflow.com/questions/3805958/how-to-delete-a-record-in-django-models
+"""
 def remove_friend_request(request, username):
     if (request.user.is_authenticated):
         profile = get_object_or_404(Profile, username=username)
-        fr = FriendRequest.objects.filter(to_user=profile.user, from_user=request.user).delete()
+        fr = FriendRequest.objects.filter(to_user=profile.user, from_user=request.user).delete() # Delete the friend request since it has been cancelled and is no longer needed
         return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
     return HttpResponseRedirect('/accounts/login')
 
@@ -100,26 +111,25 @@ def remove_friend_request(request, username):
 def remove_friend(request, username):
     if (request.user.is_authenticated):
         profile = get_object_or_404(Profile, username=username)
-        request.user.profile.friends.remove(profile)
+        request.user.profile.friends.remove(profile) # Removes friend from both profiles/users
         return HttpResponseRedirect(reverse('exercise_gamification:user_profile', args=(username,)))
     return HttpResponseRedirect('/accounts/login')
 
+"""
+Title: Good ways to sort a queryset? - Django
+Source: https://stackoverflow.com/questions/2412770/good-ways-to-sort-a-queryset-django
+"""
 def display_workouts(request):
     if (request.user.is_authenticated):
+        # Create new profile if the profile doesn't exist
         if (Profile.objects.filter(user=request.user).count() == 0):
             full_name = request.user.first_name + ' ' + request.user.last_name
             p = Profile.objects.create(user=request.user, name=full_name, username=request.user.username, email=request.user.email, bio='', level=0, xp=0)
         else:
             p = Profile.objects.get(user=request.user)
         workouts = p.workouts.all()
-        top_friends = request.user.profile.friends.order_by('-xp')[:3]
+        top_friends = request.user.profile.friends.order_by('-xp')[:3] # Sort user's friends into queryset by xp in descending order (gets the top 3 friends)
         return render(request, 'exercise_gamification/workouts.html', {'workouts': workouts, 'top_friends': top_friends})
-    return HttpResponseRedirect('/accounts/login')
-
-
-def choose_workout_type(request):
-    if (request.user.is_authenticated):
-        return render(request, 'exercise_gamification/choose_workout.html')
     return HttpResponseRedirect('/accounts/login')
 
 def load_cardio_subimssion(request):
@@ -137,9 +147,15 @@ def load_other_submission(request):
         return render(request, 'exercise_gamification/other_workout_form.html')
     return HttpResponseRedirect('/accounts/login')
 
+"""
+Title: Accessing Radio/Checkbox button selection in Django form post reques
+Source: https://stackoverflow.com/questions/51238341/accessing-radio-checkbox-button-selection-in-django-form-post-request
+"""
 def redirect_workout(request):
     if (request.user.is_authenticated):
+        # Post data returns the name of the radio button in a list
         workout_type = request.POST.getlist('workout_type')
+        # Checks the list for the appropriate workout type radio button and redirects
         if ('cardio' in workout_type):
             return HttpResponseRedirect(reverse('exercise_gamification:cardio_workout'))
         elif ('strength' in workout_type):
@@ -152,7 +168,7 @@ def redirect_workout(request):
 def submit_cardio_workout(request):
     if (request.user.is_authenticated):
         p = Profile.objects.get(user=request.user)
-
+        # Get POST workout data from form
         workout_name = request.POST['workout_name']
         calories = 0 # Dummy value for now
         workout_notes = request.POST['notes']
@@ -160,6 +176,7 @@ def submit_cardio_workout(request):
         cardio_duration = request.POST['duration']
         cardio_distance = request.POST['distance']
 
+        # Save the workout using POST data and add the workout to the profile
         w = Workout(base_profile=p, date=timezone.now(), name=workout_name, estimated_calories=calories, notes=workout_notes)
         w.save()
         c = Cardio_Workout(workout=w, duration=cardio_duration, distance=cardio_distance)
@@ -179,15 +196,19 @@ def submit_cardio_workout(request):
         return HttpResponseRedirect(reverse('exercise_gamification:workouts'))
     return HttpResponseRedirect('/accounts/login')
 
+"""
+Title: Accessing Radio/Checkbox button selection in Django form post reques
+Source: https://stackoverflow.com/questions/51238341/accessing-radio-checkbox-button-selection-in-django-form-post-request
+"""
 def submit_strength_workout(request):
     if (request.user.is_authenticated):
         p = Profile.objects.get(user=request.user)
-
+        # Get POST workout data from form
         workout_name = request.POST['workout_name']
         calories = 0 # Dummy value for now
         workout_notes = request.POST['notes']
 
-        strength_bodyweight = request.POST.getlist('bodyweight')
+        strength_bodyweight = request.POST.getlist('bodyweight') # List should contain 'on' if t he checkbox is checked
         strength_repitions = request.POST['repetitions']
         strength_weight = request.POST['weight']
 
@@ -197,6 +218,7 @@ def submit_strength_workout(request):
             strength_weight = 0
             is_bodyweight = True
 
+        # Save the workout using POST data and add the workout to the profile
         w = Workout(base_profile=p, date=timezone.now(), name=workout_name, estimated_calories=calories, notes=workout_notes)
         w.save()
 
@@ -220,13 +242,14 @@ def submit_strength_workout(request):
 def submit_other_workout(request):
     if (request.user.is_authenticated):
         p = Profile.objects.get(user=request.user)
-
+        # Get POST workout data from form
         workout_name = request.POST['workout_name']
         calories = 0 # Dummy value for now
         workout_notes = request.POST['notes']
 
         workout_description = request.POST['description']
 
+        # Save the workout using POST data and add the workout to the profile
         w = Workout(base_profile=p, date=timezone.now(), name=workout_name, estimated_calories=calories, notes=workout_notes)
         w.save()
 

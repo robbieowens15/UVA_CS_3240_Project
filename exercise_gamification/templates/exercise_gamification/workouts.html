@@ -1,4 +1,10 @@
 {% extends "exercise_gamification/base.html" %}
+
+<!--
+Bootstrap Cards
+Source: https://getbootstrap.com/docs/4.0/components/card/
+-->
+
 {% block content %}
 
 <html lang="en">
@@ -45,7 +51,7 @@
                   {% if not workout.strength_workout.bodyweight %}
                     <p>Weight: {{ workout.strength_workout.weight }} lbs</p>
                   {% else %}
-                  <p>Weight: 0 lbs (Bodyweight)</p>
+                  <p>Weight: Bodyweight</p>
                   {% endif %}
                 {% elif workout.other_workout %}
                   <p>Description: {{ workout.other_workout.description }}</p>
