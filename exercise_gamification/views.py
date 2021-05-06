@@ -24,6 +24,7 @@ def show_profile(request):
 def show_other_user_profile(request, username):
     profile = get_object_or_404(Profile, username=username)
     workouts = profile.workouts.all()[:5] # Get only the first 5 most recent workouts
+    progress_width = "width: "+ str(int((request.user.profile.xp - request.user.profile.level*10000)/100)) +"%"
     if (request.user.is_authenticated):
         if (username == request.user.profile.username):
             return HttpResponseRedirect(reverse('exercise_gamification:profile'))
@@ -41,8 +42,8 @@ def show_other_user_profile(request, username):
                 friends = 'in request'
             else:
                 friends = 'no'
-        return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'is_friend': friends, 'workouts': workouts})
-    return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'workouts': workouts})
+        return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'is_friend': friends, 'workouts': workouts, 'width': progress_width})
+    return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'workouts': workouts, 'width': progress_width})
 
 def save_profile(request):
     if (request.user.is_authenticated):
