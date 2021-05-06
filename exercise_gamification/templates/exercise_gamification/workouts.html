@@ -45,7 +45,7 @@ Source: https://getbootstrap.com/docs/4.0/components/card/
               <div class="card card-body">
                 {% if workout.cardio_workout %}
                   <p>Duration: {{ workout.cardio_workout.duration }} minutes</p>
-                  <p>Distance: {{ workout.cardio_workout.distance }} meters</p>
+                  <p>Distance: {{ workout.cardio_workout.distance }} miles</p>
                 {% elif workout.strength_workout %}
                   <p>Repititions: {{ workout.strength_workout.repetitions }}</p>
                   {% if not workout.strength_workout.bodyweight %}
