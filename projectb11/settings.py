@@ -101,6 +101,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'projectb11.wsgi.application'
 
+#The following is used to run Postgres SQL on production and SQL lite
+#on local. Code & processes from the following webpage was followed closely:
+#https://blog.usejournal.com/deploying-django-to-heroku-connecting-heroku-postgres-fcc960d290d1
+#3/24/2021
+
 DATABASES = {}
 DATABASES['default'] =  dj_database_url.config(default='postgres://postgres@localhost/test_db', conn_max_age=600, ssl_require=True)
 
@@ -117,6 +122,10 @@ if 'TRAVIS' in os.environ:
     }
 
 #Required for Google Auth
+#The following youtube video was used to setup google authentication
+#The processes and code were followed directly from:
+#https://www.youtube.com/watch?v=NG48CLLsb1A
+#3/24/2021
 AUTHENTICATION_BACKENDS = [
     # Needed to login by username in Django admin, regardless of `allauth`
     'django.contrib.auth.backends.ModelBackend',
