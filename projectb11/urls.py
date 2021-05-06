@@ -17,8 +17,10 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import TemplateView, RedirectView
 
+from . import views
+
 urlpatterns = [
-    path('', TemplateView.as_view(template_name="exercise_gamification/index.html")),
+    path('', views.index, name='index'),
     path(r'b11adminpath/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('accounts/profile/', RedirectView.as_view(url='/')),

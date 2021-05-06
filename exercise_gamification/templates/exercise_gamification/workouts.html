@@ -1,4 +1,10 @@
 {% extends "exercise_gamification/base.html" %}
+
+<!--
+Bootstrap Cards
+Source: https://getbootstrap.com/docs/4.0/components/card/
+-->
+
 {% block content %}
 
 <html lang="en">
@@ -39,13 +45,13 @@
               <div class="card card-body">
                 {% if workout.cardio_workout %}
                   <p>Duration: {{ workout.cardio_workout.duration }} minutes</p>
-                  <p>Distance: {{ workout.cardio_workout.distance }} meters</p>
+                  <p>Distance: {{ workout.cardio_workout.distance }} miles</p>
                 {% elif workout.strength_workout %}
                   <p>Repititions: {{ workout.strength_workout.repetitions }}</p>
                   {% if not workout.strength_workout.bodyweight %}
                     <p>Weight: {{ workout.strength_workout.weight }} lbs</p>
                   {% else %}
-                  <p>Weight: 0 lbs (Bodyweight)</p>
+                  <p>Weight: Bodyweight</p>
                   {% endif %}
                 {% elif workout.other_workout %}
                   <p>Description: {{ workout.other_workout.description }}</p>

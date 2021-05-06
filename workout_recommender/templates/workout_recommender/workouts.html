@@ -1,12 +1,14 @@
 {% extends './base.html' %}
 
 {% block more-content%}
-<ul>
+<ul><br>
     {% for workout in workouts %}
-    <li>
-        <h2>{{ workout.name }}</h2>
-        <p>{{ workout.description }}</p>
-    </li>
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title">{{ workout.name }}</h2>
+          <p>{{ workout.description }}</p>
+        </div>
+      </div><br>
     {% endfor %}
 </ul>
 {% endblock more-content %}

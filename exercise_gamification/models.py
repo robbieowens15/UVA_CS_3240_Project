@@ -33,6 +33,11 @@ FriendRequest class holds data about friend requests sent between two users
 Fields:
     to_user - The user who is being send the friend request
     from_user - The user who sent the friend request
+
+Friend Requests System
+Source: https://medium.com/analytics-vidhya/add-friends-with-689a2fa4e41d
+The idea of creating a FriendRequest model came from this source. We figured the rest out
+on our own.
 """
 class FriendRequest(models.Model):
     to_user = models.ForeignKey(User, related_name='to_user', on_delete=models.CASCADE)
