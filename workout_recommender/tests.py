@@ -9,7 +9,6 @@ class RecommenderTests(TestCase):
         response = self.client.get('/workout_recommender/', secure=True)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Workout Recommender")
-        self.assertContains(response, "Make Selection")
 
     def test_all_workouts(self):
         self.factory = RequestFactory()
