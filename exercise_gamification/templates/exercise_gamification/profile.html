@@ -18,34 +18,35 @@
     <div class="container text-dark mt-5">
       <div class="row justify-content-md-center">
         <div class="col-md-7">
-          {% if user.is_authenticated %}
-            <div class="flex-container">
+           <div class="flex-container">
               <h1>{{ profile.name }}</h1>
-              {% if profile.username == user.username %}
-                <div>
-                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#profileEditModal">Edit Profile</button>
-                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#friendsModal">Friends</button><br><br>
-                </div>
-              {% else %}
-                {% if is_friend == 'yes' %}
+              {% if user.is_authenticated %}
+                {% if profile.username == user.username %}
                   <div>
-                    <button type="button" class="btn btn-danger" onclick="location.href='{% url 'exercise_gamification:remove_friend' profile.username %}'">Remove Friend</button><br><br>
-                  </div>
-                {% elif is_friend == 'out request' %}
-                  <div>
-                    <button type="button" class="btn btn-warning" onclick="location.href='{% url 'exercise_gamification:remove_fr' profile.username %}'">Cancel Friend Request</button><br><br>
-                  </div>
-                {% elif is_friend == 'in request' %}
-                  <div>
-                    <button type="button" class="btn btn-success" onclick="location.href='{% url 'exercise_gamification:accept_fr' profile.username %}'">Accept Friend Request</button>
-                    <button type="button" class="btn btn-danger" onclick="location.href='{% url 'exercise_gamification:reject_fr' profile.username %}'">Reject Friend Request</button><br><br>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#profileEditModal">Edit Profile</button>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#friendsModal">Friends</button><br><br>
                   </div>
                 {% else %}
-                  <div>
-                    <button type="button" class="btn btn-success" onclick = "location.href='{% url 'exercise_gamification:send_fr' profile.username %}'">Add Friend</button><br><br>
-                  </div>
-                {% endif %}
+                  {% if is_friend == 'yes' %}
+                    <div>
+                      <button type="button" class="btn btn-danger" onclick="location.href='{% url 'exercise_gamification:remove_friend' profile.username %}'">Remove Friend</button><br><br>
+                    </div>
+                  {% elif is_friend == 'out request' %}
+                    <div>
+                      <button type="button" class="btn btn-warning" onclick="location.href='{% url 'exercise_gamification:remove_fr' profile.username %}'">Cancel Friend Request</button><br><br>
+                    </div>
+                  {% elif is_friend == 'in request' %}
+                    <div>
+                      <button type="button" class="btn btn-success" onclick="location.href='{% url 'exercise_gamification:accept_fr' profile.username %}'">Accept Friend Request</button>
+                      <button type="button" class="btn btn-danger" onclick="location.href='{% url 'exercise_gamification:reject_fr' profile.username %}'">Reject Friend Request</button><br><br>
+                    </div>
+                  {% else %}
+                    <div>
+                      <button type="button" class="btn btn-success" onclick = "location.href='{% url 'exercise_gamification:send_fr' profile.username %}'">Add Friend</button><br><br>
+                    </div>
+                  {% endif %}
               {% endif %}
+            {% endif %}
             </div>
             <h4>{{ profile.username }}</h4><br>
             <div class="flex-container">
@@ -56,10 +57,6 @@
               <div class="progress-bar bg-success" role="progressbar" style="{{ width }}" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
             </div><br>
             <p>{{ profile.bio }}</p>
-          {% else %}
-            <h4>Please Log in</h4>
-          {% endif %}
-
           <hr/>
 
           <div class = "flex-container">

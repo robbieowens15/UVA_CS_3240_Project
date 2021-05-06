@@ -80,17 +80,55 @@
       </div>
     </div>
   </div>
-  <div class="container text-dark mt-4 p-0">
-    <div class="mb-4">
-      {% if user.is_authenticated %}
-      <h1>Welcome, {{ user.username }}</h1>
-      {% else %}
-      <h1>Welcome friend, please login</h1>
-      {% endif %}
+  <div class="container text-dark mt-5">
+    <div class="row justify-content-md-center">
+      <div class="col">
+      </div>
+      <div class="col-md-7">
+        {% if user.is_authenticated %}
+          <h1>Welcome, {{ user.username }}</h1>
+        {% else %}
+          <h1>Welcome friend, please login</h1>
+        {% endif %}
+        <br><h3>Top Users</h3>
+        {% for profile in top_users %}
+          <div class="card">
+            <div class="card-body">
+              <div class="flex-container">
+                <h4 class="card-title">{{ profile.name }}</h4>
+                <p class="card-text">Level: {{ profile.level }}</p>
+              </div>
+              <div class="flex-container">
+                <h6 class="card-subtitle mb-2 text-muted">{{ profile.username }}</h6>
+                <p class="card-text">XP: {{ profile.xp }}<br>
+              </div>
+              <button class="btn btn-primary card-link" onclick="location.href='{% url 'exercise_gamification:user_profile' profile.username %}'">View Profile</button>
+            </div>
+          </div><br>
+        {% endfor %}
+      </div>
+      <div class="col">
+        {% if user.is_authenticated %}
+          <div class="card bg-light mb-5" style="max-width: 18rem;">
+            <div class="card-header">Your Rank: {{ rank }}</div>
+            <div class="card-body">
+              <h5 class="card-title">{{ profile.name }} ({{ profile.username }})</h5>
+              <p class="card-text">XP: {{ profile.xp }}</p>
+              <p class="card-text">Level: {{ profile.level }}</p>
+            </div>
+          </div>
+        {% else %}
+          <div class="card bg-light mb-5" style="max-width: 18rem;">
+            <div class="card-header">Please Login</div>
+            <div class="card-body">
+              <div class="row justify-content-md-center">
+                <button class="btn btn-primary" onclick="location.href='/accounts/login'">Login</button>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
     </div>
-    <a href="{% url 'exercise_gamification:workouts' %}"
-      class="btn btn-primary">Go to app</a>
-  </div>
   </div>
 
 

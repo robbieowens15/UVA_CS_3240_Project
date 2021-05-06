@@ -20,21 +20,22 @@ def show_profile(request):
     return HttpResponseRedirect('/accounts/login')
 
 def show_other_user_profile(request, username):
+    profile = get_object_or_404(Profile, username=username)
+    workouts = profile.workouts.all()[:5]
     if (request.user.is_authenticated):
         if (username == request.user.profile.username):
             return HttpResponseRedirect(reverse('exercise_gamification:profile'))
-    profile = get_object_or_404(Profile, username=username)
-    if (request.user.profile.friends.filter(username=username).count() > 0):
-        friends = 'yes'
-    else:
-        if (FriendRequest.objects.filter(to_user=profile.user, from_user=request.user).count() > 0):
-            friends = 'out request'
-        elif (FriendRequest.objects.filter(to_user=request.user, from_user=profile.user).count() > 0):
-            friends = 'in request'
+        if (request.user.profile.friends.filter(username=username).count() > 0):
+            friends = 'yes'
         else:
-            friends = 'no'
-    workouts = profile.workouts.all()[:5]
-    return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'is_friend': friends, 'workouts': workouts})
+            if (FriendRequest.objects.filter(to_user=profile.user, from_user=request.user).count() > 0):
+                friends = 'out request'
+            elif (FriendRequest.objects.filter(to_user=request.user, from_user=profile.user).count() > 0):
+                friends = 'in request'
+            else:
+                friends = 'no'
+        return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'is_friend': friends, 'workouts': workouts})
+    return render(request, 'exercise_gamification/profile.html', {'profile': profile, 'workouts': workouts})
 
 def show_friends(request):
     if (request.user.is_authenticated):
