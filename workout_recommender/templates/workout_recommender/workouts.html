@@ -1,10 +1,10 @@
 {% extends './base.html' %}
 
-<ul>
 {% block more-content%}
+<ul>
     {% for workout in workouts %}
     <li>
-        <h3>{{ workout.name }}</h3>
+        <h2>{{ workout.name }}</h2>
         <p>{{ workout.description }}</p>
     </li>
     {% endfor %}
