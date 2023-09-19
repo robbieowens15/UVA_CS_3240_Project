@@ -1,5 +1,6 @@
 # CS3240: Project B-11
 ## Exercise Gamficiation
+DEPRICATED
 
 Herokuapp Link: https://project-b-11-cs3240.herokuapp.com/
 GitHub Repo Link: https://github.com/uva-cs3240-s21/project-b-11
